@@ -4,14 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  DONE
-}
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -20,23 +14,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model Dashboard {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   title     String
-  tasts     Task[]
+  tasks     Task[]
 }
 
 model Task {
-  id          Int        @id @default(autoincrement())
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   title       String
   description String?
-  priority    String?
+  priority    TaskPriority? @default(MEDIUM)
   dueDate     DateTime?
   dashboardId Int
-  dashboard   Dashboard  @relation(fields: [dashboardId], references: [id])
-  status      TaskStatus @default(TODO)
+  dashboard   Dashboard     @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  status      TaskStatus    @default(TODO)
 }
