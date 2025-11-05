@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import dashboards from './routes/dashboards';
+import tasks from './routes/tasks';
 
 dotenv.config();
 
@@ -14,6 +15,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/dashboard', dashboards);
+
+app.use('/api/v1/task', tasks);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

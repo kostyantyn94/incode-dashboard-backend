@@ -15,6 +15,18 @@ export const getDashboards = async (req: Request, res: Response) => {
   }
 };
 
+export const getDashboardTasks = async (req: Request, res: Response) => {
+  try {
+    const dashboardId = +req.params.id;
+    const tasks = await prisma.task.findMany({ where: { dashboardId } });
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({
+      error: error,
+    });
+  }
+};
+
 export const createDashboard = async (req: Request, res: Response) => {
   const data = req.body;
   console.log('bodyData', data);
@@ -35,8 +47,8 @@ export const createDashboard = async (req: Request, res: Response) => {
 export const getDashboard = async (req: Request, res: Response) => {
   try {
     const id = +req.params.id;
-    const dashboards = await prisma.dashboard.findUnique({ where: { id: id } });
-    res.status(200).json(dashboards);
+    const dashboard = await prisma.dashboard.findUnique({ where: { id: id } });
+    res.status(200).json(dashboard);
   } catch (error) {
     res.status(500).json({
       error: error,
@@ -48,11 +60,11 @@ export const updateDashboard = async (req: Request, res: Response) => {
   try {
     const data = req.body;
     const id = +req.params.id;
-    const dashboards = await prisma.dashboard.update({
+    const dashboard = await prisma.dashboard.update({
       where: { id: id },
       data,
     });
-    res.status(200).json(dashboards);
+    res.status(200).json(dashboard);
   } catch (error) {
     res.status(500).json({
       error: error,
@@ -63,10 +75,10 @@ export const updateDashboard = async (req: Request, res: Response) => {
 export const deleteDashboard = async (req: Request, res: Response) => {
   try {
     const id = +req.params.id;
-    const dashboards = await prisma.dashboard.delete({
+    const dashboard = await prisma.dashboard.delete({
       where: { id: id },
     });
-    res.status(200).json(dashboards);
+    res.status(200).json(dashboard);
   } catch (error) {
     res.status(500).json({
       error: error,
