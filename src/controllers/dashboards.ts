@@ -19,7 +19,7 @@ export const getDashboard = async (req: Request, res: Response) => {
   try {
     const id = +req.params.id;
     const dashboard = await prisma.dashboard.findUnique({ where: { id } });
-    const tasks = await prisma.task.findMany({ where: { id } });
+    const tasks = await prisma.task.findMany({ where: { dashboardId: id } });
     res.status(200).json({ dashboard, tasks });
   } catch (error) {
     res.status(500).json({
