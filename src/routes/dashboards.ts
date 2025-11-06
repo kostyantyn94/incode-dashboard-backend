@@ -5,22 +5,24 @@ import {
   getDashboard,
   updateDashboard,
   deleteDashboard,
-  getDashboardTasks,
 } from '../controllers/dashboards';
+import { validate } from '../middleware/validate';
+import {
+  createDashboardSchema,
+  updateDashboardSchema,
+  dashboardIdSchema,
+} from '../validators/schemas';
 
 const router = express.Router();
 
 // Get and Create Dashboards
-router.get('/', getDashboards).post('/', createDashboard);
-
-// Get Dashboards Tasks
-
-router.get('/:id/tasks', getDashboardTasks);
-
+router
+  .get('/', getDashboards)
+  .post('/', validate(createDashboardSchema), createDashboard);
 // Get, Update and Delete Dashboard
 router
-  .get('/:id', getDashboard)
-  .patch('/:id', updateDashboard)
-  .delete('/:id', deleteDashboard);
+  .get('/:id', validate(dashboardIdSchema), getDashboard)
+  .patch('/:id', validate(updateDashboardSchema), updateDashboard)
+  .delete('/:id', validate(dashboardIdSchema), deleteDashboard);
 
 export default router;
