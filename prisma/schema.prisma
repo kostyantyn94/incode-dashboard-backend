@@ -45,4 +45,8 @@ model Task {
   dashboardId Int
   dashboard   Dashboard     @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
   status      TaskStatus    @default(TODO)
+  position    Int           @default(0)
+
+  @@unique([dashboardId, status, position])
+  @@index([dashboardId, status, position])
 }
