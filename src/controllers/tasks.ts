@@ -23,7 +23,7 @@ export const createTask = async (req: Request, res: Response) => {
     const newTask = await prisma.task.create({
       data: { ...data, position: newPosition },
     });
-    res.status(200).json({ ...newTask, id: hashedDashboardId });
+    res.status(200).json({ ...newTask, dashboardId: hashedDashboardId });
   } catch (error) {
     res.status(500).json({
       error: error,
