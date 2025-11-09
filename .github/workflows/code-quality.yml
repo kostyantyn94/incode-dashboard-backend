@@ -22,15 +22,21 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --include=optional
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/ci_db
 
       - name: Generate Prisma Client
         run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/ci_db
 
       - name: Run ESLint
         run: npm run lint
 
       - name: Check TypeScript types
         run: npm run build
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/ci_db
 
       - name: Check code formatting
         run: npx prettier --check "src/**/*.{ts,tsx,js,json,md}"
@@ -52,5 +58,7 @@ jobs:
           context: .
           push: false
           tags: incode-dashboard-backend:test
+          build-args: |
+            DATABASE_URL=postgresql://user:password@localhost:5432/ci_db
           cache-from: type=gha
           cache-to: type=gha,mode=max

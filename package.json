@@ -11,8 +11,7 @@
     "build": "prisma generate && tsc",
     "start": "node dist/index.js",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\"",
-    "postinstall": "prisma generate"
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\""
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",

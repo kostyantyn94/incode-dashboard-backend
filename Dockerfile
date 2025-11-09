@@ -3,6 +3,10 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Build argument for DATABASE_URL (only needed for Prisma schema validation)
+ARG DATABASE_URL=postgresql://user:password@localhost:5432/db
+ENV DATABASE_URL=$DATABASE_URL
+
 # Copy package files
 COPY package*.json ./
 
@@ -22,6 +26,10 @@ RUN npm run build
 FROM node:20-alpine
 
 WORKDIR /app
+
+# Build argument for DATABASE_URL (only needed for Prisma schema validation)
+ARG DATABASE_URL=postgresql://user:password@localhost:5432/db
+ENV DATABASE_URL=$DATABASE_URL
 
 # Copy package files
 COPY package*.json ./
