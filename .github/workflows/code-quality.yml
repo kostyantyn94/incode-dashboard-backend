@@ -22,18 +22,27 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --include=optional
-
-      - name: Generate Prisma Client
-        run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/ci_db
+          HASHIDS_SALT: ci-test-salt-12345678
 
       - name: Run ESLint
         run: npm run lint
 
       - name: Check TypeScript types
         run: npm run build
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/ci_db
+          HASHIDS_SALT: ci-test-salt-12345678
 
       - name: Check code formatting
         run: npx prettier --check "src/**/*.{ts,tsx,js,json,md}"
+
+      - name: Run tests
+        run: npm run test
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/ci_db
+          HASHIDS_SALT: ci-test-salt-12345678
 
   docker-build:
     name: Docker Build Test
@@ -52,5 +61,7 @@ jobs:
           context: .
           push: false
           tags: incode-dashboard-backend:test
+          build-args: |
+            DATABASE_URL=postgresql://user:password@localhost:5432/ci_db
           cache-from: type=gha
           cache-to: type=gha,mode=max
