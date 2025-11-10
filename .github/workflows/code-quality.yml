@@ -65,3 +65,4 @@ jobs:
             DATABASE_URL=postgresql://user:password@localhost:5432/ci_db
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          load: true

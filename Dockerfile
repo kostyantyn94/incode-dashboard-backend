@@ -3,21 +3,21 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Copy package files
+COPY package*.json ./
+
+# Copy Prisma schema before installing (needed for postinstall)
+COPY prisma ./prisma
+
 # Build argument for DATABASE_URL (only needed for Prisma schema validation)
 ARG DATABASE_URL=postgresql://user:password@localhost:5432/db
 ENV DATABASE_URL=$DATABASE_URL
 
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
+# Install dependencies (postinstall will run prisma generate)
 RUN npm ci
 
 # Copy source code
 COPY . .
-
-# Generate Prisma Client
-RUN npx prisma generate
 
 # Build TypeScript
 RUN npm run build
@@ -27,22 +27,21 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Copy package files
+COPY package*.json ./
+
+# Copy Prisma schema before installing (needed for postinstall)
+COPY --from=builder /app/prisma ./prisma
+
 # Build argument for DATABASE_URL (only needed for Prisma schema validation)
 ARG DATABASE_URL=postgresql://user:password@localhost:5432/db
 ENV DATABASE_URL=$DATABASE_URL
 
-# Copy package files
-COPY package*.json ./
-
-# Install production dependencies only
+# Install production dependencies only (postinstall will run prisma generate)
 RUN npm ci --only=production
 
-# Copy Prisma schema and generated client
-COPY --from=builder /app/prisma ./prisma
+# Copy generated Prisma client from builder
 COPY --from=builder /app/generated ./generated
-
-# Generate Prisma Client in production
-RUN npx prisma generate
 
 # Copy built application
 COPY --from=builder /app/dist ./dist
